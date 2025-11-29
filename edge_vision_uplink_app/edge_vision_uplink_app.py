@@ -1,6 +1,6 @@
 import reflex as rx
-import reflex.chakra as rx_chakra
-import reflex.recharts as rx_recharts
+import reflex_chakra as rx_chakra
+
 import threading
 import paho.mqtt.client as paho_mqtt
 import json
@@ -107,15 +107,10 @@ class State(rx.State):
         logger.info(f"Added incident: {incident_data}")
 
 # UI definition
-def index():
-    return rx.center(
-        rx.vstack(
-            rx.heading("Mission Control", size="9"),
-            rx.text(f"Robots Online: {State.robots.length()}"),
 def robot_card(robot_id: str, robot_data: dict):
     return rx_chakra.card(
         rx_chakra.vstack(
-            rx_chakra.heading(f"Robot ID: {robot_id}", size="5"),
+            rx_chakra.heading(f"Robot ID: {robot_id}", size="lg"),
             rx_chakra.text(f"X: {robot_data.get('x', 'N/A')}, Y: {robot_data.get('y', 'N/A')}"),
             rx_chakra.hstack(
                 rx_chakra.text(f"Battery: {robot_data.get('battery', 'N/A')}V"),
@@ -131,18 +126,18 @@ def robot_card(robot_id: str, robot_data: dict):
 def index():
     return rx_chakra.center(
         rx_chakra.vstack(
-            rx_chakra.heading("Mission Control", size="9"),
+            rx_chakra.heading("Mission Control", size="4xl"),
             rx_chakra.text(f"Robots Online: {State.robots.length()}"),
             rx_chakra.responsive_grid(
-                rx_chakra.foreach(State.robots.items(), lambda item: robot_card(item[0], item[1])),
+                rx.foreach(State.robots.items(), lambda item: robot_card(item[0], item[1])),
                 columns=[1, 2, 3],
                 spacing="4",
                 width="100%",
             ),
-            rx_recharts.scatter_chart(
-                rx_recharts.x_axis(data_key="x", type_="number", domain=["auto", "auto"], label={"value": "X Coordinate", "position": "insideBottom", "offset": -5}),
-                rx_recharts.y_axis(data_key="y", type_="number", domain=["auto", "auto"], label={"value": "Y Coordinate", "position": "insideLeft", "angle": -90}),
-                rx_recharts.scatter(data_key="id", fill="#8884d8"),
+            rx.recharts.scatter_chart(
+                rx.recharts.x_axis(data_key="x", type_="number", domain=["auto", "auto"], label={"value": "X Coordinate", "position": "insideBottom", "offset": -5}),
+                rx.recharts.y_axis(data_key="y", type_="number", domain=["auto", "auto"], label={"value": "Y Coordinate", "position": "insideLeft", "angle": -90}),
+                rx.recharts.scatter(data_key="id", fill="#8884d8"),
                 data=State.robot_locations,
                 width=500,
                 height=300,
@@ -154,17 +149,17 @@ def index():
     )
 
 def audits():
-    return rx.center(
-        rx.vstack(
-            rx.heading("Safety Audits", size="9"),
-            rx.text(f"Incidents: {State.incidents.length()}"),
+    return rx_chakra.center(
+        rx_chakra.vstack(
+            rx_chakra.heading("Safety Audits", size="4xl"),
+            rx_chakra.text(f"Incidents: {State.incidents.length()}"),
             rx.foreach(State.incidents, lambda incident:
-                rx.card(
-                    rx.vstack(
-                        rx.heading(f"Incident ID: {incident.get('id', 'N/A')}", size="5"),
-                        rx.text(f"Type: {incident.get('type', 'N/A')}"),
-                        rx.text(f"Robot: {incident.get('robot_id', 'N/A')}"),
-                        rx.text(f"Timestamp: {incident.get('timestamp', 'N/A')}"),
+                rx_chakra.card(
+                    rx_chakra.vstack(
+                        rx_chakra.heading(f"Incident ID: {incident.get('id', 'N/A')}", size="lg"),
+                        rx_chakra.text(f"Type: {incident.get('type', 'N/A')}"),
+                        rx_chakra.text(f"Robot: {incident.get('robot_id', 'N/A')}"),
+                        rx_chakra.text(f"Timestamp: {incident.get('timestamp', 'N/A')}"),
                     )
                 )
             ),
