@@ -36,14 +36,16 @@ services:
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
       - ./mosquitto/config:/mosquitto/config # Mount local config directory
+    environment:
+      - TZ=Asia/Kolkata
     networks:
       - edge-vision-network
 
-  reflex_app:
+  app:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
-    container_name: reflex_app
+    container_name: app
     ports:
       - "3000:3000" # Frontend
       - "8000:8000" # Backend
@@ -54,16 +56,16 @@ services:
       MINIO_SECRET_KEY: "minioadmin"
       MQTT_BROKER_HOST: "mosquitto"
       MQTT_BROKER_PORT: "1883"
-      RX_CONFIG_PATH: "/frontend/rxconfig.py"
+      TZ: Asia/Kolkata
     depends_on:
       - mongodb
       - minio
       - mosquitto
     volumes:
-      - ./backend:/backend_app # Mount the backend directory into the container
-      - ./frontend:/frontend # Mount the frontend directory into the container
+      - .:/app # Mount the entire project directory
     networks:
       - edge-vision-network
+
 volumes:
   mongodb_data:
   minio_data:
