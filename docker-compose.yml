@@ -61,8 +61,7 @@ services:
       - mongodb
       - minio
       - mosquitto
-    volumes:
-      - .:/app # Mount the entire project directory
+
     networks:
       - edge-vision-network
 
